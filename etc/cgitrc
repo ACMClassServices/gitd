@@ -1,0 +1,9 @@
+scan-path=/srv/gitd/repos
+virtual-root=/
+readme=:README.md
+readme=:readme.md
+readme=:README
+readme=:readme
+noheader=1
+favicon=
+css=/_cgit/cgit.css

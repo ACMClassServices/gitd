@@ -1,0 +1,5 @@
+[core]
+        hooksPath = /opt/gitd/githooks
+
+[http]
+        receivepack = true

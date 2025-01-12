@@ -1,0 +1,6 @@
+FCGI_SOCKET=/run/fcgiwrap.sock
+FCGI_PROGRAM="/usr/bin/fcgiwrap -f"
+FCGI_USER=nginx
+FCGI_GROUP=www-data
+FCGI_EXTRA_OPTIONS="-M 0700"
+ALLOWED_ENV="PATH"

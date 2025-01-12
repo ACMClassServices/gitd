@@ -1,0 +1,38 @@
+#!/usr/bin/python3
+
+import sys
+from os import makedirs
+from subprocess import run
+
+sys.path.append('/opt/gitd/')
+
+from logging import getLogger
+
+from gitd.config import base_dir
+from gitd.git_env import gitdir, path, repo
+
+logger = getLogger()
+
+if not repo.serve:
+  exit(0)
+
+head = run(['git', 'symbolic-ref', 'HEAD'], check=True, capture_output=True).stdout.decode().strip()
+updating_head = False
+
+while True:
+    try:
+        old, new, ref = input().split(' ', maxsplit=2)
+        if ref == head and old != new:
+            updating_head = True
+    except EOFError:
+        break
+
+if updating_head:
+    logger.info(f'repo:serve {path=}')
+    serve_path = base_dir / 'serve' / path
+    if not serve_path.exists():
+        makedirs(serve_path)
+        run(['env', '-i', 'git', 'clone', gitdir, '.', '-q'], cwd=serve_path, check=True)
+    else:
+        run(['env', '-i', 'git', 'fetch', '-q'], cwd=serve_path, check=True)
+    run(['env', '-i', 'git', 'checkout', '-q', 'origin/HEAD'], cwd=serve_path, check=True)

@@ -1,0 +1,20 @@
+services:
+  gitd:
+    build: .
+    ports:
+      - '80:80'
+      - '81:81'
+      - '82:82'
+    secrets:
+      - htpasswd
+    tmpfs:
+      - /run
+    volumes:
+      - gitd:/srv/gitd
+
+secrets:
+  htpasswd:
+    file: htpasswd
+
+volumes:
+  gitd:

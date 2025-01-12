@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+
+import sys
+from subprocess import run
+
+sys.path.append('/opt/gitd/')
+
+from gitd.git_env import gitdir, repo
+
+
+def get_size():
+    return int(run(['du', '-sb', gitdir], check=True, capture_output=True).stdout.split()[0])
+
+size = get_size()
+
+if size < 0 or size > repo.max_size_bytes:
+    try:
+        run(['env', '-i', 'git', 'gc', '--prune=now', '--quiet'], check=True)
+    except Exception:
+        print('Unable to run git gc')
+    print(f'Error: Disk quota exceeded for repository (max {repo.max_size_bytes} bytes, used {size} bytes), refusing to update refs.')
+    exit(1)
+
+while True:
+    try:
+        old, new, ref = input().split(' ', maxsplit=2)
+        # For OJ
+        if ref.startswith('refs/tags/submission'):
+            print(f'Refusing to update ref {ref}.')
+            exit(1)
+    except EOFError:
+        break

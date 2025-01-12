@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+command=/usr/bin/gunicorn
+command_args="-w 4 'gitd.controller:app' -b unix:/run/gunicorn.sock --log-file /srv/gitd/log/api/gunicorn.log"
+command_args_background="--daemon"
+command_user=nginx:www-data
+start_stop_daemon_args="-d /opt/gitd"
+
+depend() {
+  before nginx
+}
