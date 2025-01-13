@@ -1,5 +1,5 @@
 scan-path=/srv/gitd/repos
-virtual-root=/
+virtual-root=/GITD_CGIT_VIRTUAL_ROOT_zT0Ohfr3SNbdeP4c/
 readme=:README.md
 readme=:readme.md
 readme=:README
