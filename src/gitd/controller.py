@@ -51,12 +51,13 @@ def check_repo_exists(path):
             abort(NOT_FOUND, 'No such repo')
 
 def check_path_not_exist(path: PosixPath):
-    while path != repo_base and path.parent != path:
-        if path.exists():
+    with Session.begin() as db:
+        while path != repo_base and path.parent != path:
+            if path.exists() and db.scalar(select(Repo).where(Repo.path == str(path.relative_to(repo_base)))):
+                abort(BAD_REQUEST, 'Invalid repo path')
+            path = path.parent
+        if path != repo_base:
             abort(BAD_REQUEST, 'Invalid repo path')
-        path = path.parent
-    if path != repo_base:
-        abort(BAD_REQUEST, 'Invalid repo path')
 
 
 @app.post('/repo')
