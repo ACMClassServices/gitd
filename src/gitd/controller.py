@@ -88,6 +88,12 @@ def ensure_repo():
             repo.serve = serve
             return '', NO_CONTENT
 
+def remove_repo(path: PosixPath):
+    if path.exists():
+        rmtree(path)
+    if not any(path.parent.iterdir()):
+        removedirs(path.parent)
+
 @app.delete('/repo')
 def delete_repo():
     path = request.form['path']
@@ -100,14 +106,11 @@ def delete_repo():
         db.delete(repo)
 
         repo_path = repo_base / path
-        rmtree(repo_path)
-        removedirs(repo_path.parent)
+        remove_repo(repo_path)
 
         if repo.serve:
             serve_path = base_dir / 'serve' / path
-            if serve_path.exists():
-                rmtree(serve_path)
-                removedirs(serve_path.parent)
+            remove_repo(serve_path)
 
     return '', NO_CONTENT
 
